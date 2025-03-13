@@ -66,7 +66,7 @@ init_hooks: ## Initialize Git hooks, or check if an update is available.
 
 ## —— Quality Assurance (QA) 🛡️ ————————————————————————————————————————————————
 # Executables
-PHP_CS_FIXER = $(PHP_CONT) ./tools/php-cs-fixer/vendor/bin/php-cs-fixer
+PHP_CS_FIXER = $(PHP_CONT) ./vendor/bin/php-cs-fixer
 PHPSTAN = $(PHP_CONT) ./vendor/bin/phpstan
 PHPUNIT = $(PHP_CONT) ./vendor/bin/phpunit
 
