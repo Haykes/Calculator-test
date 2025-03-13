@@ -1,26 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Calculatrice TDD</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff, #d9e4ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .calc {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            width: 320px;
+        }
+
+        h1 {
+            margin-bottom: 15px;
+            color: #5a68df;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: calc(100% - 24px);
+            font-size: 1.1em;
+        }
+
+        button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            margin: 5px;
+            font-size: 1.2em;
+            background-color: #4a90e2;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #3b82f6;
+        }
+
+        #result {
+            font-size: 2em;
+            font-weight: bold;
+            color: #111827;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<input type="number" id="number1">
-<input type="number" id="number2">
-<button id="add">+</button>
-<button id="subtract">-</button>
-<button id="multiply">×</button>
-
-<div id="result"></div>
+<div class="calc">
+    <h1>Calculatrice TDD</h1>
+    <input type="number" id="number1" placeholder="Premier nombre">
+    <input type="number" id="number2" placeholder="Deuxième nombre">
+    <br>
+    <button id="add">+</button>
+    <button id="subtract">-</button>
+    <button id="multiply">×</button>
+    <button id="divide">÷</button>
+    <div id="result"></div>
+</div>
 
 <script>
-    document.getElementById('add').onclick = () => {
-        let a = Number(document.getElementById('number1').value);
-        let b = Number(document.getElementById('number2').value);
+    function calculate(operation) {
+        const a = document.getElementById('number1').value;
+        const b = document.getElementById('number2').value;
 
-        document.getElementById('result').textContent = a + b;
-    };
-    // tu pourras coder les autres actions plus tard
+        fetch(`/api/calculator/${operation}?a=${a}&b=${b}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('result').textContent = data.result ?? data.error;
+            });
+    }
+
+    document.getElementById('add').onclick = () => calculate('add');
+    document.getElementById('subtract').onclick = () => calculate('subtract');
+    document.getElementById('multiply').onclick = () => calculate('multiply');
+    document.getElementById('divide').onclick = () => calculate('divide');
 </script>
 </body>
 </html>

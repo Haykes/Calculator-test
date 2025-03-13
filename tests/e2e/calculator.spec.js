@@ -30,3 +30,29 @@ test('multiplication 3*5=15', async ({ page }) => {
     await page.click('#multiply');
     await expect(page.locator('#result')).toHaveText('15');
 });
+
+test('soustraction 10 - 4 = 6', async ({ page }) => {
+    await page.goto('http://localhost:8080');
+    await page.fill('#number1', '10');
+    await page.fill('#number2', '4');
+    await page.click('#subtract');
+    await expect(page.locator('#result')).toHaveText('6');
+});
+
+test('Historique affiche résultats des précédents calculs', async ({ page }) => {
+    await page.goto('http://localhost:8080');
+    await page.fill('#number1', '1');
+    await page.fill('#number2', '2');
+    await page.click('#add');
+    await page.click('#multiply');
+
+    // clic bouton historique
+    await page.click('#show-history');
+
+    // vérifie que l'historique est visible
+    const history = page.locator('#history');
+    await expect(history).toBeVisible();
+    await expect(history).toContainText(['3', '2']);
+});
+
+

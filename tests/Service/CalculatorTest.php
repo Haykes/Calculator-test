@@ -96,7 +96,6 @@ class CalculatorTest extends TestCase
     {
         $this->calculator->add(1, 1);
         $this->calculator->clearHistory();
-
         $this->assertEmpty($this->calculator->getHistory());
     }
 
@@ -113,4 +112,12 @@ class CalculatorTest extends TestCase
             $this->assertEqualsWithDelta($expectedHistory[$key], $value, 0.0001);
         }
     }
+    public function testDivisionByZero(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Division by zero');
+
+        $this->calculator->divide(10, 0);
+    }
+
 }

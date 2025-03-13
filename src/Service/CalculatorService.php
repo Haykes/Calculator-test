@@ -6,9 +6,6 @@ namespace App\Service;
 
 class CalculatorService
 {
-    /**
-     * @var float[]
-     */
     private array $history = [];
 
     public function add(float $a, float $b): float
@@ -32,6 +29,22 @@ class CalculatorService
         return $result;
     }
 
+    public function divide(float $a, float $b): float
+    {
+        if ($b == 0.0) {
+            throw new \InvalidArgumentException('Division by zero');
+        }
+
+        $result = $a / $b;
+        $this->storeInHistory($result);
+        return $result;
+    }
+
+    private function storeInHistory(float $result): void
+    {
+        $this->history[] = $result;
+    }
+
     public function getHistory(): array
     {
         return $this->history;
@@ -41,9 +54,5 @@ class CalculatorService
     {
         $this->history = [];
     }
-
-    private function storeInHistory(float $result): void
-    {
-        $this->history[] = $result;
-    }
+    
 }
