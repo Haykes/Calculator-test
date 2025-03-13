@@ -1,0 +1,12 @@
+services:
+  php:
+    volumes:
+      - .:/var/www/app.dev
+    networks:
+      - calculatrice-test.network
+  apache:
+    volumes:
+      - .:/var/www/app.dev
+    ports:
+      - "${APACHE_PORT:-8075}:80"
+      - "9496:443"
