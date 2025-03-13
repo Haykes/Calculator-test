@@ -1,0 +1,25 @@
+{
+  "name": "calculatrice-test",
+  "version": "1.0.0",
+  "description": "docker compose -f docker-compose.yml build",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Haykes/Calculator-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Haykes/Calculator-test/issues"
+  },
+  "homepage": "https://github.com/Haykes/Calculator-test#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.51.0",
+    "@types/node": "^22.13.10"
+  }
+}
