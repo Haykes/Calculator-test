@@ -13,6 +13,7 @@ class CalculatorService
     {
         $result = $a + $b;
         $this->storeInHistory($result);
+
         return $result;
     }
 
@@ -20,6 +21,7 @@ class CalculatorService
     {
         $result = $a - $b;
         $this->storeInHistory($result);
+
         return $result;
     }
 
@@ -27,17 +29,19 @@ class CalculatorService
     {
         $result = $a * $b;
         $this->storeInHistory($result);
+
         return $result;
     }
 
     public function divide(float $a, float $b): float
     {
-        if ($b === 0.0) {
+        if (0.0 === $b) {
             throw new \InvalidArgumentException('Division by zero');
         }
 
         $result = $a / $b;
         $this->storeInHistory($result);
+
         return $result;
     }
 
