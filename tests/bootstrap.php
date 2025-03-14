@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 use Symfony\Component\Dotenv\Dotenv;
 
-require dirname(__DIR__).'/vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
 
-if (method_exists(Dotenv::class, 'bootEnv')) {
-    (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
-}
+// Charger les variables d'environnement
+(new Dotenv())->bootEnv(dirname(__DIR__) . '/.env');
 
-if ($_SERVER['APP_DEBUG']) {
+// S'assurer que APP_DEBUG est un booléen avant de l'utiliser dans la condition
+if ((bool) ($_SERVER['APP_DEBUG'] ?? false)) {
     umask(0000);
 }

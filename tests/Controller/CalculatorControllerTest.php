@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 class CalculatorControllerTest extends WebTestCase
 {
-    private $client;
+    private KernelBrowser $client; // ✅ Ajout du type explicite
 
     protected function setUp(): void
     {
@@ -19,50 +20,52 @@ class CalculatorControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Calculatrice TDD');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('h1', 'Calculatrice TDD');
     }
 
     public function testAdditionViaApi(): void
     {
         $this->client->request('GET', '/api/calculator/add?a=2&b=3');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonStringEqualsJsonString('{"result":5}', $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
+        $responseContent = (string) $this->client->getResponse()->getContent(); // ✅ Force en string
+        self::assertJsonStringEqualsJsonString('{"result":5}', $responseContent);
     }
 
     public function testSubtractionApi(): void
     {
         $this->client->request('GET', '/api/calculator/subtract?a=10&b=4');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonStringEqualsJsonString('{"result":6}', $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
+        $responseContent = (string) $this->client->getResponse()->getContent(); // ✅ Force en string
+        self::assertJsonStringEqualsJsonString('{"result":6}', $responseContent);
     }
 
     public function testMultiplicationApi(): void
     {
         $this->client->request('GET', '/api/calculator/multiply?a=3&b=5');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonStringEqualsJsonString('{"result":15}', $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
+        $responseContent = (string) $this->client->getResponse()->getContent(); // ✅ Force en string
+        self::assertJsonStringEqualsJsonString('{"result":15}', $responseContent);
     }
 
     public function testDivisionApi(): void
     {
         $this->client->request('GET', '/api/calculator/divide?a=10&b=2');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonStringEqualsJsonString('{"result":5}', $this->client->getResponse()->getContent());
+        self::assertResponseIsSuccessful();
+        $responseContent = (string) $this->client->getResponse()->getContent(); // ✅ Force en string
+        self::assertJsonStringEqualsJsonString('{"result":5}', $responseContent);
     }
 
     public function testDivisionByZeroApi(): void
     {
         $this->client->request('GET', '/api/calculator/divide?a=10&b=0');
 
-        $this->assertResponseStatusCodeSame(400);
-        $this->assertJsonStringEqualsJsonString(
-            '{"error":"Division by zero"}',
-            $this->client->getResponse()->getContent()
-        );
+        self::assertResponseStatusCodeSame(400);
+        $responseContent = (string) $this->client->getResponse()->getContent(); // ✅ Force en string
+        self::assertJsonStringEqualsJsonString('{"error":"Division by zero"}', $responseContent);
     }
 }
