@@ -4,45 +4,68 @@
     <meta charset="UTF-8">
     <title>Calculatrice TDD</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f0f4ff, #d9e4ff);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
-            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 360px;
+            gap: 20px;
         }
 
         .calc {
             background: #ffffff;
-            padding: 30px;
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            width: 320px;
+            width: 100%;
+            text-align: center;
         }
 
         h1 {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             color: #5a68df;
         }
 
         input[type="number"] {
-            padding: 10px;
-            margin: 10px 0;
+            padding: 12px;
+            margin-bottom: 12px;
             border-radius: 8px;
             border: 1px solid #ccc;
-            width: calc(100% - 24px);
+            width: 100%;
             font-size: 1.1em;
+            text-align: center;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
         }
 
         button {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             border: none;
-            margin: 5px;
-            font-size: 1.2em;
+            font-size: 1.3em;
             background-color: #4a90e2;
             color: white;
             cursor: pointer;
@@ -57,21 +80,80 @@
             font-size: 2em;
             font-weight: bold;
             color: #111827;
-            margin-top: 20px;
+            margin-top: 15px;
+        }
+
+        .history {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            text-align: center;
+        }
+
+        .history h2 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .history-list {
+            font-size: 1em;
+            color: #555;
+            list-style: none;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+            border-top: 1px solid #ddd;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .history-list li {
+            padding: 8px 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .clear-history {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            border-radius: 8px;
+            border: none;
+            font-size: 1em;
+            background-color: red;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .clear-history:hover {
+            background-color: darkred;
         }
     </style>
 </head>
 <body>
-<div class="calc">
-    <h1>Calculatrice TDD</h1>
-    <input type="number" id="number1" placeholder="Premier nombre">
-    <input type="number" id="number2" placeholder="Deuxième nombre">
-    <br>
-    <button id="add">+</button>
-    <button id="subtract">-</button>
-    <button id="multiply">×</button>
-    <button id="divide">÷</button>
-    <div id="result"></div>
+
+<div class="container">
+    <div class="calc">
+        <h1>Calculatrice TDD</h1>
+        <input type="number" id="number1" placeholder="Premier nombre">
+        <input type="number" id="number2" placeholder="Deuxième nombre">
+        <div class="buttons">
+            <button id="add">+</button>
+            <button id="subtract">-</button>
+            <button id="multiply">×</button>
+            <button id="divide">÷</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <div class="history">
+        <h2>Historique des calculs</h2>
+        <ul id="history-list" class="history-list"></ul>
+        <button id="clear-history" class="clear-history">Effacer l'historique</button>
+    </div>
 </div>
 
 <script>
@@ -83,13 +165,39 @@
             .then(res => res.json())
             .then(data => {
                 document.getElementById('result').textContent = data.result ?? data.error;
+                updateHistory();
             });
+    }
+
+    function updateHistory() {
+        fetch('/api/calculator/history')
+            .then(res => res.json())
+            .then(data => {
+                const historyList = document.getElementById('history-list');
+                historyList.innerHTML = '';
+                data.history.forEach(entry => {
+                    const li = document.createElement('li');
+                    li.textContent = entry;
+                    historyList.appendChild(li);
+                });
+            });
+    }
+
+    function clearHistory() {
+        fetch('/api/calculator/clear-history', {
+            method: 'POST'
+        })
+            .then(() => updateHistory());
     }
 
     document.getElementById('add').onclick = () => calculate('add');
     document.getElementById('subtract').onclick = () => calculate('subtract');
     document.getElementById('multiply').onclick = () => calculate('multiply');
     document.getElementById('divide').onclick = () => calculate('divide');
+    document.getElementById('clear-history').onclick = () => clearHistory();
+
+    updateHistory();
 </script>
+
 </body>
 </html>

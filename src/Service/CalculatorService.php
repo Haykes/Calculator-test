@@ -4,15 +4,22 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use Symfony\Component\HttpFoundation\RequestStack;
+
 class CalculatorService
 {
-    /** @var float[] */
-    private array $history = [];
+    private const SESSION_HISTORY_KEY = 'calculator_history';
+    private RequestStack $requestStack;
+
+    public function __construct(RequestStack $requestStack)
+    {
+        $this->requestStack = $requestStack;
+    }
 
     public function add(float $a, float $b): float
     {
         $result = $a + $b;
-        $this->storeInHistory($result);
+        $this->storeInHistory($a, $b, '+', $result);
 
         return $result;
     }
@@ -20,7 +27,7 @@ class CalculatorService
     public function subtract(float $a, float $b): float
     {
         $result = $a - $b;
-        $this->storeInHistory($result);
+        $this->storeInHistory($a, $b, '-', $result);
 
         return $result;
     }
@@ -28,7 +35,7 @@ class CalculatorService
     public function multiply(float $a, float $b): float
     {
         $result = $a * $b;
-        $this->storeInHistory($result);
+        $this->storeInHistory($a, $b, '×', $result);
 
         return $result;
     }
@@ -40,26 +47,33 @@ class CalculatorService
         }
 
         $result = $a / $b;
-        $this->storeInHistory($result);
+        $this->storeInHistory($a, $b, '÷', $result);
 
         return $result;
     }
 
-    private function storeInHistory(float $result): void
+    private function storeInHistory(float $a, float $b, string $operator, float $result): void
     {
-        $this->history[] = $result;
+        $session = $this->requestStack->getSession();
+        /** @var string[] $history */
+        $history = (array) $session->get(self::SESSION_HISTORY_KEY, []);
+
+        $history[] = "{$a} {$operator} {$b} = {$result}";
+        $session->set(self::SESSION_HISTORY_KEY, $history);
     }
 
     /**
-     * @return float[]
+     * @return string[]
      */
     public function getHistory(): array
     {
-        return $this->history;
+        /** @var string[] $history */
+        $history = (array) $this->requestStack->getSession()->get(self::SESSION_HISTORY_KEY, []);
+        return $history;
     }
 
     public function clearHistory(): void
     {
-        $this->history = [];
+        $this->requestStack->getSession()->remove(self::SESSION_HISTORY_KEY);
     }
 }
