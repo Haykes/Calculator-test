@@ -58,6 +58,7 @@ class CalculatorController extends AbstractController
 
         return $this->json(['result' => $calculator->divide($a, $b)]);
     }
+
     #[Route('/api/calculator/history', name: 'api_calculator_history', methods: ['GET'])]
     public function getHistory(CalculatorService $calculator): JsonResponse
     {
@@ -68,9 +69,7 @@ class CalculatorController extends AbstractController
     public function clearHistory(CalculatorService $calculator): JsonResponse
     {
         $calculator->clearHistory();
+
         return $this->json(['message' => 'Historique effacé']);
     }
-
-
-
 }

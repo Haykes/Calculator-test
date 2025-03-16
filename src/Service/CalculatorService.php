@@ -68,8 +68,7 @@ class CalculatorService
     public function getHistory(): array
     {
         /** @var string[] $history */
-        $history = (array) $this->requestStack->getSession()->get(self::SESSION_HISTORY_KEY, []);
-        return $history;
+        return (array) $this->requestStack->getSession()->get(self::SESSION_HISTORY_KEY, []);
     }
 
     public function clearHistory(): void

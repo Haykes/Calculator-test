@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Service;
 
 use App\Service\CalculatorService;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -10,7 +13,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class CalculatorServiceTest extends TestCase
 {
     private CalculatorService $calculator;
-    private SessionInterface $session;
+
+    /** @var SessionInterface&MockObject */
+    private $session;
 
     protected function setUp(): void
     {
@@ -26,9 +31,14 @@ class CalculatorServiceTest extends TestCase
 
     public function testAdd(): void
     {
-        $this->session->method('get')->willReturn([]);
         $this->session
-            ->expects($this->once())
+            ->expects(self::once())
+            ->method('get')
+            ->with('calculator_history', [])
+            ->willReturn([]);
+
+        $this->session
+            ->expects(self::once())
             ->method('set')
             ->with('calculator_history', ['2 + 3 = 5']);
 
@@ -39,9 +49,14 @@ class CalculatorServiceTest extends TestCase
 
     public function testSubtract(): void
     {
-        $this->session->method('get')->willReturn([]);
+        $this->session
+            ->expects(self::once())
+            ->method('get')
+            ->with('calculator_history', [])
+            ->willReturn([]);
 
-        $this->session->expects(self::once())
+        $this->session
+            ->expects(self::once())
             ->method('set')
             ->with('calculator_history', ['5 - 3 = 2']);
 
@@ -52,9 +67,14 @@ class CalculatorServiceTest extends TestCase
 
     public function testMultiply(): void
     {
-        $this->session->method('get')->willReturn([]);
+        $this->session
+            ->expects(self::once())
+            ->method('get')
+            ->with('calculator_history', [])
+            ->willReturn([]);
 
-        $this->session->expects(self::once())
+        $this->session
+            ->expects(self::once())
             ->method('set')
             ->with('calculator_history', ['4 × 5 = 20']);
 
@@ -65,9 +85,14 @@ class CalculatorServiceTest extends TestCase
 
     public function testDivide(): void
     {
-        $this->session->method('get')->willReturn([]);
+        $this->session
+            ->expects(self::once())
+            ->method('get')
+            ->with('calculator_history', [])
+            ->willReturn([]);
 
-        $this->session->expects(self::once())
+        $this->session
+            ->expects(self::once())
             ->method('set')
             ->with('calculator_history', ['10 ÷ 2 = 5']);
 
@@ -88,7 +113,11 @@ class CalculatorServiceTest extends TestCase
     {
         $expectedHistory = ['2 + 2 = 4', '3 × 3 = 9'];
 
-        $this->session->method('get')->willReturn($expectedHistory);
+        $this->session
+            ->expects(self::once())
+            ->method('get')
+            ->with('calculator_history', [])
+            ->willReturn($expectedHistory);
 
         $history = $this->calculator->getHistory();
 
@@ -97,7 +126,8 @@ class CalculatorServiceTest extends TestCase
 
     public function testClearHistory(): void
     {
-        $this->session->expects(self::once())
+        $this->session
+            ->expects(self::once())
             ->method('remove')
             ->with('calculator_history');
 
